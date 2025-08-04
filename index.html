@@ -18,6 +18,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
     }
 
     .container {
@@ -31,6 +32,25 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
       overflow: hidden;
       padding: 32px;
+      position: relative;
+    }
+
+    /* Flüssige Glas-Form */
+    .glass-effect {
+      position: absolute;
+      top: -50px;
+      left: -50px;
+      width: 150%;
+      height: 150%;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+      filter: blur(20px);
+      z-index: -1;
+      animation: wave 5s infinite;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: translateX(-50%) rotate(0deg); }
+      50% { transform: translateX(-50%) rotate(360deg); }
     }
 
     h2 {
@@ -155,6 +175,9 @@
 </head>
 <body>
   <div class="container">
+    <!-- Flüssiges Glas-Element -->
+    <div class="glass-effect"></div>
+
     <h2>🛒 Taobao Link Converter</h2>
     <p class="intro">Wandle Tmall/Taobao-Links in OopBuy, KakaoBuy, CNFans oder iTaobaoBuy um – mit Glas-Design.</p>
 
