@@ -3,15 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Taobao → Shop Converter</title>
+  <title>Global Plug Taobao Link Converter</title>
   <style>
     /* iOS-Like Liquid Glass Design */
     @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap');
 
+    :root {
+      --bg-color: #1e1e1e;
+      --text-color: #ffffff;
+      --button-bg-light: #3b82f6;
+      --button-bg-dark: #3b82f6;
+      --input-bg-light: rgba(255, 255, 255, 0.1);
+      --result-bg-light: rgba(255, 255, 255, 0.1);
+      --accent-color: #d9770d; /* Akzentfarbe (passt zum Logo) */
+    }
+
     body {
       font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #d4e1f5, #f0f4ff);
-      background-attachment: fixed;
+      background: var(--bg-color);
       margin: 0;
       padding: 20px;
       min-height: 100vh;
@@ -19,6 +28,7 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
+      transition: background 0.3s ease;
     }
 
     .container {
@@ -33,9 +43,10 @@
       overflow: hidden;
       padding: 32px;
       position: relative;
+      transition: all 0.3s ease;
     }
 
-    /* Flüssige Glas-Form */
+    /* Flüssiges Glas-Element */
     .glass-effect {
       position: absolute;
       top: -50px;
@@ -54,19 +65,22 @@
     }
 
     h2 {
-      color: #1d1d1f;
+      color: var(--text-color);
       text-align: center;
       font-weight: 600;
       font-size: 24px;
       margin-bottom: 8px;
+      animation: fadeIn 1s ease-in-out;
     }
 
     p.intro {
-      color: #636366;
+      color: var(--text-color);
       font-size: 15px;
       text-align: center;
       margin-bottom: 24px;
       font-weight: 400;
+      opacity: 0;
+      animation: fadeIn 1.5s ease-in-out 0.5s;
     }
 
     .form-group {
@@ -77,18 +91,20 @@
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
-      color: #1d1d1f;
+      color: var(--text-color);
       font-size: 16px;
+      opacity: 0;
+      animation: fadeIn 1.5s ease-in-out 0.7s;
     }
 
     input, select {
       width: 100%;
       padding: 14px 16px;
-      background: rgba(255, 255, 255, 0.6);
+      background: var(--input-bg-light);
       border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 12px;
       font-size: 16px;
-      color: #1d1d1f;
+      color: var(--text-color);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
@@ -97,7 +113,7 @@
 
     input:focus, select:focus {
       outline: none;
-      border-color: #007aff;
+      border-color: var(--button-bg-light);
       box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
       background: white;
     }
@@ -111,10 +127,12 @@
       font-size: 16px;
       font-weight: 500;
       transition: all 0.2s ease;
+      opacity: 0;
+      animation: fadeIn 1.5s ease-in-out 1s;
     }
 
     .btn-convert {
-      background: #007aff;
+      background: var(--button-bg-light);
       color: white;
     }
 
@@ -136,7 +154,7 @@
     #result {
       margin-top: 24px;
       padding: 20px;
-      background: rgba(240, 240, 240, 0.6);
+      background: var(--result-bg-light);
       border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 14px;
       backdrop-filter: blur(8px);
@@ -144,10 +162,12 @@
       word-break: break-all;
       display: none;
       font-size: 15px;
+      opacity: 0;
+      animation: fadeIn 1.5s ease-in-out 1.2s;
     }
 
     #result a {
-      color: #007aff;
+      color: var(--button-bg-light);
       font-weight: 500;
       text-decoration: none;
     }
@@ -163,6 +183,42 @@
       gap: 12px;
     }
 
+    /* Dark/Light Switch */
+    .theme-switch {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+      background: linear-gradient(to right, #ccc, #aaa);
+      border-radius: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .theme-switch::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .theme-switch:checked + .theme-switch::before {
+      transform: translateX(20px);
+    }
+
+    .theme-switch:checked + .theme-switch {
+      background: linear-gradient(to right, #aaa, #ccc);
+    }
+
     /* Responsive */
     @media (max-width: 600px) {
       .container {
@@ -171,15 +227,54 @@
       }
       h2 { font-size: 22px; }
     }
+
+    /* Logo */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+
+    /* Animationen */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Akzentfarbe für Logo */
+    .logo {
+      filter: drop-shadow(0 0 10px var(--accent-color));
+    }
+
+    /* iTaoBuy statt iTaobaoBuy */
+    option[value="itaobuy"] {
+      content: "iTaoBuy";
+    }
   </style>
 </head>
-<body>
+<body class="dark-mode">
   <div class="container">
     <!-- Flüssiges Glas-Element -->
     <div class="glass-effect"></div>
 
+    <!-- Header mit Logo und Dark/Light-Schalter -->
+    <div class="header">
+      <img src="https://i.imgur.com/your-logo-url-here.png" alt="Global Plug Logo" class="logo">
+      <label class="theme-switch">
+        <input type="checkbox" id="darkModeSwitch">
+        <span class="theme-switch"></span>
+      </label>
+    </div>
+
     <h2>🛒 Taobao Link Converter</h2>
-    <p class="intro">Wandle Tmall/Taobao-Links in OopBuy, KakaoBuy, CNFans oder iTaobaoBuy um – mit Glas-Design.</p>
+    <p class="intro">Wandle Tmall/Taobao-Links in OopBuy, KakaoBuy, CNFans oder iTaoBuy um – mit Glas-Design.</p>
 
     <div class="form-group">
       <label for="shopSelect">➡️ Wähle den Shop:</label>
@@ -187,7 +282,7 @@
         <option value="oopbuy">OopBuy</option>
         <option value="kakobuy">KakaoBuy</option>
         <option value="cnfans">CNFans</option>
-        <option value="itaobuy">iTaobaoBuy</option>
+        <option value="itaobuy">iTaoBuy</option>
       </select>
     </div>
 
@@ -203,6 +298,14 @@
 
   <script>
     let currentLink = null;
+
+    // Dark/Light Modus schalten
+    const darkModeSwitch = document.getElementById('darkModeSwitch');
+    const body = document.body;
+
+    darkModeSwitch.addEventListener('change', () => {
+      body.classList.toggle('dark-mode');
+    });
 
     function convertLink() {
       const input = document.getElementById("taobaoLink").value.trim();
@@ -249,7 +352,7 @@
           oopbuy: "OopBuy",
           kakobuy: "KakaoBuy",
           cnfans: "CNFans",
-          itaobuy: "iTaobaoBuy"
+          itaobuy: "iTaoBuy"
         }[shop]}-Link:</strong><br>
         <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
         <div class="buttons">
