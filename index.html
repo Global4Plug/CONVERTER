@@ -3,119 +3,177 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Taobao → OopBuy / KakaoBuy / CNFans / iTaobaoBuy</title>
+  <title>Taobao → Shop Converter</title>
   <style>
+    /* iOS-Like Liquid Glass Design */
+    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap');
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f9fc;
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #d4e1f5, #f0f4ff);
+      background-attachment: fixed;
+      margin: 0;
       padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
     .container {
-      max-width: 700px;
-      margin: 0 auto;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 720px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+      padding: 32px;
     }
+
     h2 {
-      color: #2c3e50;
+      color: #1d1d1f;
       text-align: center;
+      font-weight: 600;
+      font-size: 24px;
       margin-bottom: 8px;
     }
+
     p.intro {
-      color: #7f8c8d;
+      color: #636366;
       font-size: 15px;
       text-align: center;
+      margin-bottom: 24px;
+      font-weight: 400;
+    }
+
+    .form-group {
       margin-bottom: 20px;
     }
-    .form-group {
-      margin-bottom: 15px;
-    }
+
     label {
       display: block;
-      margin-bottom: 6px;
-      font-weight: bold;
-      color: #34495e;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #1d1d1f;
+      font-size: 16px;
     }
+
     input, select {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
       font-size: 16px;
-      box-sizing: border-box;
+      color: #1d1d1f;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
     }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #007aff;
+      box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+      background: white;
+    }
+
     button {
-      padding: 12px 16px;
-      margin: 8px 6px 8px 0;
+      padding: 14px 20px;
+      margin: 6px 8px 6px 0;
       border: none;
-      border-radius: 6px;
+      border-radius: 12px;
       cursor: pointer;
-      font-size: 15px;
-      font-weight: bold;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
     }
+
     .btn-convert {
-      background-color: #3498db;
+      background: #007aff;
       color: white;
     }
+
     .btn-copy {
-      background-color: #2ecc71;
+      background: #30d158;
       color: white;
     }
+
     .btn-open {
-      background-color: #e67e22;
+      background: #ff9f0a;
       color: white;
     }
+
     button:hover {
-      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
+
     #result {
-      margin-top: 20px;
-      padding: 16px;
-      background-color: #f8f9fa;
-      border: 1px solid #ced4da;
-      border-radius: 6px;
+      margin-top: 24px;
+      padding: 20px;
+      background: rgba(240, 240, 240, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 14px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       word-break: break-all;
       display: none;
+      font-size: 15px;
     }
+
     #result a {
-      color: #3498db;
-      font-weight: bold;
+      color: #007aff;
+      font-weight: 500;
       text-decoration: none;
     }
+
     #result a:hover {
       text-decoration: underline;
     }
+
     .buttons {
-      margin-top: 12px;
+      margin-top: 16px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container {
+        padding: 24px;
+        border-radius: 16px;
+      }
+      h2 { font-size: 22px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Taobao → OopBuy / KakaoBuy / CNFans / iTaobaoBuy</h2>
-    <p class="intro">Wandle Taobao/Tmall-Links in Links für OopBuy, KakaoBuy, CNFans oder iTaobaoBuy um – mit richtigen, funktionierenden URLs.</p>
+    <h2>🛒 Taobao Link Converter</h2>
+    <p class="intro">Wandle Tmall/Taobao-Links in OopBuy, KakaoBuy, CNFans oder iTaobaoBuy um – mit Glas-Design.</p>
 
     <div class="form-group">
-      <label for="shopSelect">Wähle den Shop:</label>
+      <label for="shopSelect">➡️ Wähle den Shop:</label>
       <select id="shopSelect">
         <option value="oopbuy">OopBuy</option>
         <option value="kakobuy">KakaoBuy</option>
         <option value="cnfans">CNFans</option>
-        <option value="itaobuy">iTaobaoBuy (www.itaobuy.com)</option>
+        <option value="itaobuy">iTaobaoBuy</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label for="taobaoLink">Taobao/Tmall-Link einfügen:</label>
+      <label for="taobaoLink">🔗 Taobao/Tmall-Link einfügen:</label>
       <input type="text" id="taobaoLink" placeholder="https://detail.tmall.com/item.htm?id=..." />
     </div>
 
-    <button onclick="convertLink()" class="btn-convert">➡️ Umwandeln</button>
+    <button onclick="convertLink()" class="btn-convert">Umwandeln</button>
 
     <div id="result"></div>
   </div>
@@ -135,10 +193,8 @@
         return;
       }
 
-      // Nur den Teil vor # nehmen
       const cleanLink = input.split("#")[0];
 
-      // Extrahiere die ID für OopBuy und CNFans
       const idMatch = cleanLink.match(/[?&]id=(\d+)/);
       if (!idMatch) {
         alert("❌ Keine gültige Produkt-ID im Link gefunden. Stelle sicher, dass 'id=...' enthalten ist.");
@@ -165,9 +221,8 @@
 
       currentLink = convertedLink;
 
-      // Ergebnis anzeigen
       resultDiv.innerHTML = `
-        <strong>${{
+        <strong>➡️ ${{
           oopbuy: "OopBuy",
           kakobuy: "KakaoBuy",
           cnfans: "CNFans",
@@ -176,7 +231,7 @@
         <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
         <div class="buttons">
           <button onclick="copyLink()" class="btn-copy">📋 Kopieren</button>
-          <button onclick="openLink()" class="btn-open">🚀 Direkt öffnen</button>
+          <button onclick="openLink()" class="btn-open">🚀 Öffnen</button>
         </div>
       `;
       resultDiv.style.display = "block";
@@ -185,10 +240,9 @@
     function copyLink() {
       if (!currentLink) return;
       navigator.clipboard.writeText(currentLink).then(() => {
-        alert("✅ Link wurde in die Zwischenablage kopiert!");
-      }).catch(err => {
-        console.error("Fehler beim Kopieren:", err);
-        prompt("📋 Kopiere den Link manuell (Strg+C):", currentLink);
+        alert("✅ Link kopiert!");
+      }).catch(() => {
+        prompt("📋 Kopiere manuell (Strg+C):", currentLink);
       });
     }
 
