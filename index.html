@@ -3,145 +3,182 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Taobao → KakaoBuy Link Converter</title>
+  <title>Taobao → OopBuy / KakaoBuy Converter</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+      background-color: #f7f9fc;
       padding: 20px;
     }
     .container {
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto;
       background: white;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     h2 {
-      color: #333;
+      color: #2c3e50;
       text-align: center;
+      margin-bottom: 8px;
     }
-    p {
-      font-size: 14px;
-      color: #555;
+    p.intro {
+      color: #7f8c8d;
+      font-size: 15px;
+      text-align: center;
+      margin-bottom: 20px;
     }
-    input, button {
-      padding: 10px;
-      margin: 10px 0;
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #34495e;
+    }
+    input, select {
       width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
       box-sizing: border-box;
     }
-    input {
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    .btn {
-      background-color: #4CAF50;
-      color: white;
+    button {
+      padding: 12px 16px;
+      margin: 8px 6px 8px 0;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
-      margin-top: 5px;
+      font-size: 15px;
+      font-weight: bold;
     }
-    .btn:hover {
-      opacity: 0.9;
+    .btn-convert {
+      background-color: #3498db;
+      color: white;
+    }
+    .btn-copy {
+      background-color: #2ecc71;
+      color: white;
     }
     .btn-open {
-      background-color: #1a73e8;
-      margin-left: 10px;
+      background-color: #e67e22;
+      color: white;
     }
-    .buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    button:hover {
+      opacity: 0.9;
     }
     #result {
-      margin-top: 15px;
-      padding: 15px;
-      background-color: #f0f8ff;
-      border: 1px solid #b8daff;
-      border-radius: 4px;
+      margin-top: 20px;
+      padding: 16px;
+      background-color: #f8f9fa;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
       word-break: break-all;
       display: none;
     }
     #result a {
-      color: #1a73e8;
-      text-decoration: none;
+      color: #3498db;
       font-weight: bold;
+      text-decoration: none;
     }
     #result a:hover {
       text-decoration: underline;
+    }
+    .buttons {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Taobao/Tmall → KakaoBuy Link Converter</h2>
-    <p>Füge einen Taobao- oder Tmall-Link ein, um automatisch den richtigen KakaoBuy-Bestelllink zu erhalten.</p>
-    
-    <input type="text" id="taobaoLink" placeholder="https://detail.tmall.com/item.htm?id=..." />
-    <button onclick="convertLink()" class="btn">In KakaoBuy-Link umwandeln</button>
-    
+    <h2>Taobao → OopBuy / KakaoBuy Link Converter</h2>
+    <p class="intro">Wandle Taobao/Tmall-Links in OopBuy oder KakaoBuy-Links um – ganz einfach mit Auswahl.</p>
+
+    <div class="form-group">
+      <label for="shopSelect">Wähle den Shop:</label>
+      <select id="shopSelect">
+        <option value="oopbuy">OopBuy</option>
+        <option value="kakobuy">KakaoBuy</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="taobaoLink">Taobao/Tmall-Link einfügen:</label>
+      <input type="text" id="taobaoLink" placeholder="https://detail.tmall.com/item.htm?id=..." />
+    </div>
+
+    <button onclick="convertLink()" class="btn-convert">➡️ Umwandeln</button>
+
     <div id="result"></div>
   </div>
 
   <script>
-    let currentKakaoLink = null; // Speichert den zuletzt generierten Link
+    let currentLink = null;
 
     function convertLink() {
       const input = document.getElementById("taobaoLink").value.trim();
+      const shop = document.getElementById("shopSelect").value;
       const resultDiv = document.getElementById("result");
-      resultDiv.style.display = "none"; // Reset
-      currentKakaoLink = null;
+      resultDiv.style.display = "none";
+      currentLink = null;
 
       if (!input) {
         alert("Bitte einen Taobao- oder Tmall-Link eingeben!");
         return;
       }
 
-      // Prüfen, ob es ein Taobao/Tmall-Link ist
-      if (!input.includes("taobao.com") && !input.includes("tmall.com")) {
-        alert("Bitte gib einen gültigen Taobao- oder Tmall-Link ein (mit taobao.com oder tmall.com).");
+      // Extrahiere die Produkt-ID (id=1234567890)
+      const match = input.match(/[?&]id=(\d+)/);
+      if (!match) {
+        alert("❌ Keine gültige Produkt-ID im Link gefunden. Stelle sicher, dass 'id=...' enthalten ist.");
         return;
       }
 
-      // Nur den Teil vor # nehmen
-      const cleanLink = input.split("#")[0];
+      const productId = match[1];
+      let convertedLink = "";
 
-      // Den gesamten Link URL-encodieren
-      const encodedUrl = encodeURIComponent(cleanLink);
-      const kakaoBuyLink = `https://kakobuy.com/item/details?url=${encodedUrl}`;
+      if (shop === "oopbuy") {
+        convertedLink = `https://oopbuy.com/product/1/${productId}`;
+      } else if (shop === "kakobuy") {
+        // Für KakaoBuy: Den gesamten Link URL-encodieren
+        const cleanLink = input.split("#")[0]; // Entfernt #anchor
+        const encodedUrl = encodeURIComponent(cleanLink);
+        convertedLink = `https://kakobuy.com/item/details?url=${encodedUrl}`;
+      }
 
-      // Link speichern
-      currentKakaoLink = kakaoBuyLink;
+      currentLink = convertedLink;
 
-      // Ergebnis anzeigen mit zwei Buttons
+      // Ergebnis anzeigen
       resultDiv.innerHTML = `
-        <strong>KakaoBuy-Link:</strong><br>
-        <a href="${kakaoBuyLink}" target="_blank" rel="noopener">Direkt bei KakaoBuy ansehen</a><br><br>
+        <strong>${shop === "oopbuy" ? "OopBuy" : "KakaoBuy"}-Link:</strong><br>
+        <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
         <div class="buttons">
-          <button onclick="copyLink()" class="btn">📋 Link kopieren</button>
-          <button onclick="openLink()" class="btn btn-open">🚀 Direkt öffnen</button>
+          <button onclick="copyLink()" class="btn-copy">📋 Kopieren</button>
+          <button onclick="openLink()" class="btn-open">🚀 Direkt öffnen</button>
         </div>
       `;
       resultDiv.style.display = "block";
     }
 
     function copyLink() {
-      if (!currentKakaoLink) return;
-      navigator.clipboard.writeText(currentKakaoLink).then(() => {
-        alert("✅ KakaoBuy-Link wurde kopiert!");
+      if (!currentLink) return;
+      navigator.clipboard.writeText(currentLink).then(() => {
+        alert("✅ Link wurde in die Zwischenablage kopiert!");
       }).catch(err => {
-        console.error("Fehler beim Kopieren: ", err);
-        prompt("Link kopieren (Strg+C):", currentKakaoLink);
+        console.error("Fehler beim Kopieren:", err);
+        prompt("📋 Kopiere den Link manuell (Strg+C):", currentLink);
       });
     }
 
     function openLink() {
-      if (!currentKakaoLink) return;
-      window.open(currentKakaoLink, '_blank', 'noopener');
+      if (!currentLink) return;
+      window.open(currentLink, '_blank', 'noopener');
     }
   </script>
 </body>
