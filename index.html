@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Taobao → OopBuy / KakaoBuy / CNFans Converter</title>
+  <title>Taobao → OopBuy / KakaoBuy / CNFans / iTaobaoBuy</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,7 +11,7 @@
       padding: 20px;
     }
     .container {
-      max-width: 680px;
+      max-width: 700px;
       margin: 0 auto;
       background: white;
       padding: 30px;
@@ -97,8 +97,8 @@
 </head>
 <body>
   <div class="container">
-    <h2>Taobao → OopBuy / KakaoBuy / CNFans Link Converter</h2>
-    <p class="intro">Wandle Taobao/Tmall-Links in OopBuy, KakaoBuy oder CNFans-Links um – mit einfacher Auswahl.</p>
+    <h2>Taobao → OopBuy / KakaoBuy / CNFans / iTaobaoBuy</h2>
+    <p class="intro">Wandle Taobao/Tmall-Links in Links für OopBuy, KakaoBuy, CNFans oder iTaobaoBuy um – mit richtigen, funktionierenden URLs.</p>
 
     <div class="form-group">
       <label for="shopSelect">Wähle den Shop:</label>
@@ -106,6 +106,7 @@
         <option value="oopbuy">OopBuy</option>
         <option value="kakobuy">KakaoBuy</option>
         <option value="cnfans">CNFans</option>
+        <option value="itaobuy">iTaobaoBuy (www.itaobuy.com)</option>
       </select>
     </div>
 
@@ -134,33 +135,44 @@
         return;
       }
 
-      // Extrahiere die Produkt-ID (id=1234567890)
-      const match = input.match(/[?&]id=(\d+)/);
-      if (!match) {
+      // Nur den Teil vor # nehmen
+      const cleanLink = input.split("#")[0];
+
+      // Extrahiere die ID für OopBuy und CNFans
+      const idMatch = cleanLink.match(/[?&]id=(\d+)/);
+      if (!idMatch) {
         alert("❌ Keine gültige Produkt-ID im Link gefunden. Stelle sicher, dass 'id=...' enthalten ist.");
         return;
       }
 
-      const productId = match[1];
+      const productId = idMatch[1];
       let convertedLink = "";
 
       if (shop === "oopbuy") {
         convertedLink = `https://oopbuy.com/product/1/${productId}`;
       } 
       else if (shop === "kakobuy") {
-        const cleanLink = input.split("#")[0]; // Entfernt #anker
         const encodedUrl = encodeURIComponent(cleanLink);
         convertedLink = `https://kakobuy.com/item/details?url=${encodedUrl}`;
       }
       else if (shop === "cnfans") {
         convertedLink = `https://cnfans.com/product?id=${productId}&platform=TAOBAO`;
       }
+      else if (shop === "itaobuy") {
+        const encodedUrl = encodeURIComponent(cleanLink);
+        convertedLink = `https://www.itaobuy.com/product-detail?url=${encodedUrl}`;
+      }
 
       currentLink = convertedLink;
 
       // Ergebnis anzeigen
       resultDiv.innerHTML = `
-        <strong>${shop === "oopbuy" ? "OopBuy" : shop === "kakobuy" ? "KakaoBuy" : "CNFans"}-Link:</strong><br>
+        <strong>${{
+          oopbuy: "OopBuy",
+          kakobuy: "KakaoBuy",
+          cnfans: "CNFans",
+          itaobuy: "iTaobaoBuy"
+        }[shop]}-Link:</strong><br>
         <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
         <div class="buttons">
           <button onclick="copyLink()" class="btn-copy">📋 Kopieren</button>
