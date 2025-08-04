@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Taobao → KakaoBuy Link Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    input {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #result {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #f0f8ff;
+      border: 1px solid #b8daff;
+      border-radius: 4px;
+      word-break: break-all;
+      display: none;
+    }
+    #result a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+    #result a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Taobao → KakaoBuy Link Converter</h2>
+    <p>Füge einen Taobao-Link ein, um automatisch den passenden KakaoBuy-Link zu erhalten.</p>
+    
+    <input type="text" id="taobaoLink" placeholder="https://item.taobao.com/item.htm?id=123456789" />
+    <button onclick="convertLink()">In KakaoBuy-Link umwandeln</button>
+    
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function convertLink() {
+      const input = document.getElementById("taobaoLink").value.trim();
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "none"; // Reset
+
+      if (!input) {
+        alert("Bitte einen Taobao-Link eingeben!");
+        return;
+      }
+
+      // RegEx, um die ID aus dem Taobao-Link zu extrahieren
+      const match = input.match(/id=(\d+)/);
+      if (!match) {
+        alert("Ungültiger Taobao-Link. Stelle sicher, dass er eine Produkt-ID enthält (id=...).");
+        return;
+      }
+
+      const productId = match[1];
+      const kakaoBuyLink = `https://www.kakaobuy.com/de/product?taobaoId=${productId}`;
+
+      resultDiv.innerHTML = `
+        <strong>KakaoBuy-Link:</strong><br>
+        <a href="${kakaoBuyLink}" target="_blank">${kakaoBuyLink}</a><br><br>
+        <button onclick="copyLink('${kakaoBuyLink}')" style="background:#1a73e8;color:white;padding:8px;border:none;border-radius:4px;cursor:pointer;">
+          Kopieren
+        </button>
+      `;
+      resultDiv.style.display = "block";
+    }
+
+    function copyLink(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Link kopiert!");
+      }).catch(err => {
+        console.error("Fehler beim Kopieren: ", err);
+        alert("Fehler beim Kopieren.");
+      });
+    }
+  </script>
+</body>
+</html>
