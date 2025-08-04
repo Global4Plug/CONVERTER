@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Taobao → OopBuy / KakaoBuy Converter</title>
+  <title>Taobao → OopBuy / KakaoBuy / CNFans Converter</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,7 +11,7 @@
       padding: 20px;
     }
     .container {
-      max-width: 650px;
+      max-width: 680px;
       margin: 0 auto;
       background: white;
       padding: 30px;
@@ -97,14 +97,15 @@
 </head>
 <body>
   <div class="container">
-    <h2>Taobao → OopBuy / KakaoBuy Link Converter</h2>
-    <p class="intro">Wandle Taobao/Tmall-Links in OopBuy oder KakaoBuy-Links um – ganz einfach mit Auswahl.</p>
+    <h2>Taobao → OopBuy / KakaoBuy / CNFans Link Converter</h2>
+    <p class="intro">Wandle Taobao/Tmall-Links in OopBuy, KakaoBuy oder CNFans-Links um – mit einfacher Auswahl.</p>
 
     <div class="form-group">
       <label for="shopSelect">Wähle den Shop:</label>
       <select id="shopSelect">
         <option value="oopbuy">OopBuy</option>
         <option value="kakobuy">KakaoBuy</option>
+        <option value="cnfans">CNFans</option>
       </select>
     </div>
 
@@ -145,18 +146,21 @@
 
       if (shop === "oopbuy") {
         convertedLink = `https://oopbuy.com/product/1/${productId}`;
-      } else if (shop === "kakobuy") {
-        // Für KakaoBuy: Den gesamten Link URL-encodieren
-        const cleanLink = input.split("#")[0]; // Entfernt #anchor
+      } 
+      else if (shop === "kakobuy") {
+        const cleanLink = input.split("#")[0]; // Entfernt #anker
         const encodedUrl = encodeURIComponent(cleanLink);
         convertedLink = `https://kakobuy.com/item/details?url=${encodedUrl}`;
+      }
+      else if (shop === "cnfans") {
+        convertedLink = `https://cnfans.com/product?id=${productId}&platform=TAOBAO`;
       }
 
       currentLink = convertedLink;
 
       // Ergebnis anzeigen
       resultDiv.innerHTML = `
-        <strong>${shop === "oopbuy" ? "OopBuy" : "KakaoBuy"}-Link:</strong><br>
+        <strong>${shop === "oopbuy" ? "OopBuy" : shop === "kakobuy" ? "KakaoBuy" : "CNFans"}-Link:</strong><br>
         <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
         <div class="buttons">
           <button onclick="copyLink()" class="btn-copy">📋 Kopieren</button>
