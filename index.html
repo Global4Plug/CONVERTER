@@ -15,7 +15,7 @@
       --button-bg-dark: #3b82f6;
       --input-bg-light: rgba(255, 255, 255, 0.1);
       --result-bg-light: rgba(255, 255, 255, 0.1);
-      --accent-color: #d9770d; /* Akzentfarbe (passt zum Logo) */
+      --accent-color: #b87333; /* Bronze-Gold Akzentfarbe */
     }
 
     body {
@@ -34,7 +34,7 @@
     .container {
       width: 100%;
       max-width: 720px;
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-radius: 20px;
@@ -46,31 +46,14 @@
       transition: all 0.3s ease;
     }
 
-    /* Flüssiges Glas-Element */
-    .glass-effect {
-      position: absolute;
-      top: -50px;
-      left: -50px;
-      width: 150%;
-      height: 150%;
-      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-      filter: blur(20px);
-      z-index: -1;
-      animation: wave 5s infinite;
-    }
-
-    @keyframes wave {
-      0%, 100% { transform: translateX(-50%) rotate(0deg); }
-      50% { transform: translateX(-50%) rotate(360deg); }
-    }
-
     h2 {
       color: var(--text-color);
-      text-align: center;
+      text-align: left;
       font-weight: 600;
       font-size: 24px;
       margin-bottom: 8px;
-      animation: fadeIn 1s ease-in-out;
+      display: flex;
+      align-items: center;
     }
 
     p.intro {
@@ -79,8 +62,6 @@
       text-align: center;
       margin-bottom: 24px;
       font-weight: 400;
-      opacity: 0;
-      animation: fadeIn 1.5s ease-in-out 0.5s;
     }
 
     .form-group {
@@ -93,8 +74,6 @@
       font-weight: 500;
       color: var(--text-color);
       font-size: 16px;
-      opacity: 0;
-      animation: fadeIn 1.5s ease-in-out 0.7s;
     }
 
     input, select {
@@ -127,8 +106,6 @@
       font-size: 16px;
       font-weight: 500;
       transition: all 0.2s ease;
-      opacity: 0;
-      animation: fadeIn 1.5s ease-in-out 1s;
     }
 
     .btn-convert {
@@ -162,8 +139,6 @@
       word-break: break-all;
       display: none;
       font-size: 15px;
-      opacity: 0;
-      animation: fadeIn 1.5s ease-in-out 1.2s;
     }
 
     #result a {
@@ -240,17 +215,13 @@
       width: 60px;
       height: 60px;
       object-fit: contain;
-    }
-
-    /* Animationen */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Akzentfarbe für Logo */
-    .logo {
       filter: drop-shadow(0 0 10px var(--accent-color));
+      animation: metalGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes metalGlow {
+      0% { filter: drop-shadow(0 0 10px var(--accent-color)); }
+      100% { filter: drop-shadow(0 0 20px var(--accent-color)); }
     }
 
     /* iTaoBuy statt iTaobaoBuy */
@@ -261,20 +232,11 @@
 </head>
 <body class="dark-mode">
   <div class="container">
-    <!-- Flüssiges Glas-Element -->
-    <div class="glass-effect"></div>
-
-    <!-- Header mit Logo und Dark/Light-Schalter -->
+    <!-- Header mit Logo und Titel -->
     <div class="header">
       <img src="https://i.imgur.com/your-logo-url-here.png" alt="Global Plug Logo" class="logo">
-      <label class="theme-switch">
-        <input type="checkbox" id="darkModeSwitch">
-        <span class="theme-switch"></span>
-      </label>
+      <h2>Taobao Link Converter</h2>
     </div>
-
-    <h2>🛒 Taobao Link Converter</h2>
-    <p class="intro">Wandle Tmall/Taobao-Links in OopBuy, KakaoBuy, CNFans oder iTaoBuy um – mit Glas-Design.</p>
 
     <div class="form-group">
       <label for="shopSelect">➡️ Wähle den Shop:</label>
