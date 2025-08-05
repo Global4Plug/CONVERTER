@@ -262,9 +262,8 @@
     </div>
 
     <div class="form-group">
-      <label for="taobaoLink" id="labelRawLink">RAW LINK</label>
+      <label for="taobaoLink">RAW LINK</label>
       <input type="text" id="taobaoLink" placeholder="Paste any Taobao, Tmall, 1688, Weidian link..." />
-      <div class="help-btn" onclick="openModal()">?</div>
     </div>
 
     <button onclick="convertLink()" class="btn-convert" id="btnConvert">Convert</button>
@@ -272,115 +271,24 @@
     <div id="result"></div>
   </div>
 
-  <!-- Hilfe-Modal -->
-  <div id="helpModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title" id="modalTitle">✅ Compatible RAW Links</div>
-        <button class="close-btn" onclick="closeModal()">×</button>
-      </div>
-      <div class="link-list" id="modalContent">
-        • <code>https://detail.tmall.com/item.htm?id=123456789</code><br>
-        • <code>https://item.taobao.com/item.htm?id=123456789</code><br>
-        • <code>https://detail.1688.com/offer/123456789.html</code><br>
-        • <code>https://shop123.weidian.com/product/123456789.html</code><br>
-        • <code>https://m.weidian.com/item.html?itemID=123456789</code>
-        <br><br>
-        <em>💡 Tip: Copy the link directly from the browser.</em>
-      </div>
-    </div>
-  </div>
-
   <script>
     let currentLink = null;
     let currentLang = 'en';
 
-    // Sprachübersetzungen
+    // Sprachübersetzungen (ohne RAW LINK – bleibt immer englisch)
     const translations = {
-      de: {
-        platform: "Plattform",
-        rawLink: "ROHLINK",
-        convert: "Umwandeln",
-        modalTitle: "✅ Kompatible Rohlinks",
-        modalTip: "💡 Tipp: Kopiere den Link direkt aus dem Browser."
-      },
-      en: {
-        platform: "Platform",
-        rawLink: "RAW LINK",
-        convert: "Convert",
-        modalTitle: "✅ Compatible RAW Links",
-        modalTip: "💡 Tip: Copy the link directly from the browser."
-      },
-      es: {
-        platform: "Plataforma",
-        rawLink: "ENLACE EN BRUTO",
-        convert: "Convertir",
-        modalTitle: "✅ Enlaces en bruto compatibles",
-        modalTip: "💡 Consejo: Copia el enlace directamente del navegador."
-      },
-      fr: {
-        platform: "Plateforme",
-        rawLink: "LIEN BRUT",
-        convert: "Convertir",
-        modalTitle: "✅ Liens bruts compatibles",
-        modalTip: "💡 Astuce : Copiez le lien directement depuis le navigateur."
-      },
-      pt: {
-        platform: "Plataforma",
-        rawLink: "LINK BRUTO",
-        convert: "Converter",
-        modalTitle: "✅ Links brutos compatíveis",
-        modalTip: "💡 Dica: Copie o link diretamente do navegador."
-      },
-      it: {
-        platform: "Piattaforma",
-        rawLink: "LINK GREZZO",
-        convert: "Converti",
-        modalTitle: "✅ Link grezzi compatibili",
-        modalTip: "💡 Suggerimento: Copia il link direttamente dal browser."
-      },
-      ru: {
-        platform: "Платформа",
-        rawLink: "СЫРАЯ ССЫЛКА",
-        convert: "Конвертировать",
-        modalTitle: "✅ Совместимые прямые ссылки",
-        modalTip: "💡 Подсказка: Скопируйте ссылку прямо из браузера."
-      },
-      tr: {
-        platform: "Platform",
-        rawLink: "HAM BAĞLANTI",
-        convert: "Dönüştür",
-        modalTitle: "✅ Uyumlu Ham Bağlantılar",
-        modalTip: "💡 İpucu: Bağlantıyı doğrudan tarayıcıdan kopyalayın."
-      },
-      pl: {
-        platform: "Platforma",
-        rawLink: "LINK NIEPRZETWORZONY",
-        convert: "Konwertuj",
-        modalTitle: "✅ Kompatybilne linki nieprzetworzone",
-        modalTip: "💡 Wskazówka: Skopiuj link bezpośrednio z przeglądarki."
-      },
-      ja: {
-        platform: "プラットフォーム",
-        rawLink: "生リンク",
-        convert: "変換",
-        modalTitle: "✅ 対応する生リンク",
-        modalTip: "💡 ヒント：ブラウザから直接リンクをコピーしてください。"
-      },
-      zh: {
-        platform: "平台",
-        rawLink: "原始链接",
-        convert: "转换",
-        modalTitle: "✅ 支持的原始链接",
-        modalTip: "💡 提示：直接从浏览器复制链接。"
-      },
-      ar: {
-        platform: "المنصة",
-        rawLink: "رابط خام",
-        convert: "تحويل",
-        modalTitle: "✅ الروابط الخام المدعومة",
-        modalTip: "💡 تلميح: انسخ الرابط مباشرة من المتصفح."
-      }
+      de: { platform: "Plattform", convert: "Umwandeln" },
+      en: { platform: "Platform", convert: "Convert" },
+      es: { platform: "Plataforma", convert: "Convertir" },
+      fr: { platform: "Plateforme", convert: "Convertir" },
+      pt: { platform: "Plataforma", convert: "Converter" },
+      it: { platform: "Piattaforma", convert: "Converti" },
+      ru: { platform: "Платформа", convert: "Конвертировать" },
+      tr: { platform: "Platform", convert: "Dönüştür" },
+      pl: { platform: "Platforma", convert: "Konwertuj" },
+      ja: { platform: "プラットフォーム", convert: "変換" },
+      zh: { platform: "平台", convert: "转换" },
+      ar: { platform: "المنصة", convert: "تحويل" }
     };
 
     // Automatische Spracherkennung
@@ -398,40 +306,10 @@
     function updateLanguage() {
       const t = translations[currentLang];
       document.getElementById('labelPlatform').textContent = t.platform;
-      document.getElementById('labelRawLink').textContent = t.rawLink;
       document.getElementById('btnConvert').textContent = t.convert;
-      document.getElementById('modalTitle').textContent = t.modalTitle;
-      document.getElementById('modalContent').innerHTML = `
-        • <code>https://detail.tmall.com/item.htm?id=123456789</code><br>
-        • <code>https://item.taobao.com/item.htm?id=123456789</code><br>
-        • <code>https://detail.1688.com/offer/123456789.html</code><br>
-        • <code>https://shop123.weidian.com/product/123456789.html</code><br>
-        • <code>https://m.weidian.com/item.html?itemID=123456789</code>
-        <br><br>
-        <em>${t.modalTip}</em>
-      `;
     }
 
-    // Modal-Funktionen
-    const modal = document.getElementById("helpModal");
-
-    function openModal() {
-      modal.style.display = "flex";
-    }
-
-    function closeModal() {
-      modal.style.display = "none";
-    }
-
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeModal();
-    });
-
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    // Init
+    // Init: Sprache beim Laden setzen
     window.onload = () => {
       const detectedLang = detectLanguage();
       document.getElementById('langSelect').value = detectedLang;
@@ -448,19 +326,26 @@
       currentLink = null;
 
       if (!input) {
-        alert(translations[currentLang].convert === "Convert" ? "⚠️ Please enter a link." : "⚠️ Bitte geben Sie einen Link ein.");
+        alert("⚠️ Please enter a link.");
         return;
       }
 
       const cleanLink = input.split("#")[0];
 
+      // Extrahiere ID aus verschiedenen Plattformen
       let productId = null;
+
+      // Taobao/Tmall: id=123456789
       const idMatch = cleanLink.match(/[?&]id=(\d+)/);
       if (idMatch) productId = idMatch[1];
+
+      // 1688: /offer/123456789.html
       if (!productId) {
         const offerMatch = cleanLink.match(/\/offer\/(\d+)\.html/);
         if (offerMatch) productId = offerMatch[1];
       }
+
+      // Weidian: /product/123456789.html oder itemID=123456789
       if (!productId) {
         const productMatch = cleanLink.match(/\/product\/(\d+)\.html/);
         if (productMatch) productId = productMatch[1];
@@ -471,20 +356,29 @@
       }
 
       if (!productId) {
-        alert("❌ No valid product ID found.");
+        alert("❌ No valid product ID found. Supported: Taobao, Tmall, 1688, Weidian.");
         return;
       }
 
       let convertedLink = "";
-      if (shop === "oopbuy") convertedLink = `https://oopbuy.com/product/1/${productId}`;
-      else if (shop === "kakobuy") convertedLink = `https://kakobuy.com/item/details?url=${encodeURIComponent(cleanLink)}`;
+
+      if (shop === "oopbuy") {
+        convertedLink = `https://oopbuy.com/product/1/${productId}`;
+      } 
+      else if (shop === "kakobuy") {
+        const encodedUrl = encodeURIComponent(cleanLink);
+        convertedLink = `https://kakobuy.com/item/details?url=${encodedUrl}`;
+      }
       else if (shop === "cnfans") {
         let platform = "TAOBAO";
         if (cleanLink.includes("1688.com")) platform = "1688";
         if (cleanLink.includes("weidian.com")) platform = "WEIDIAN";
         convertedLink = `https://cnfans.com/product?id=${productId}&platform=${platform}`;
       }
-      else if (shop === "itaobuy") convertedLink = `https://www.itaobuy.com/product-detail?url=${encodeURIComponent(cleanLink)}`;
+      else if (shop === "itaobuy") {
+        const encodedUrl = encodeURIComponent(cleanLink);
+        convertedLink = `https://www.itaobuy.com/product-detail?url=${encodedUrl}`;
+      }
 
       currentLink = convertedLink;
 
@@ -499,8 +393,8 @@
         <strong>➡️ ${shopNames[shop]}:</strong><br>
         <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
         <div class="buttons">
-          <button onclick="copyLink()" class="btn-copy">📋 ${translations[currentLang].convert === "Convert" ? "Copy" : "Kopieren"}</button>
-          <button onclick="openLink()" class="btn-open">🚀 ${translations[currentLang].convert === "Convert" ? "Open" : "Öffnen"}</button>
+          <button onclick="copyLink()" class="btn-copy">📋 Copy</button>
+          <button onclick="openLink()" class="btn-open">🚀 Open</button>
         </div>
       `;
       resultDiv.style.display = "block";
@@ -509,9 +403,9 @@
     function copyLink() {
       if (!currentLink) return;
       navigator.clipboard.writeText(currentLink).then(() => {
-        alert("✅ " + (translations[currentLang].convert === "Convert" ? "Link copied!" : "Link kopiert!"));
+        alert("✅ Link copied!");
       }).catch(() => {
-        prompt("📋 " + (translations[currentLang].convert === "Convert" ? "Copy manually (Ctrl+C):" : "Manuell kopieren (Strg+C):"), currentLink);
+        prompt("📋 Copy manually (Ctrl+C):", currentLink);
       });
     }
 
