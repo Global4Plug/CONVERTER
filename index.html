@@ -100,8 +100,35 @@
       opacity: 0.9;
     }
 
+    .label-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .help-btn {
+      width: 28px;
+      height: 28px;
+      background: rgba(184, 115, 51, 0.2);
+      border: 1px solid rgba(184, 115, 51, 0.4);
+      border-radius: 50%;
+      color: #b87333;
+      font-size: 16px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .help-btn:hover {
+      background: rgba(184, 115, 51, 0.3);
+      transform: scale(1.1);
+    }
+
     input, select {
-      width: 100%; /* Alle Eingabefelder gleich breit */
+      width: 100%;
       padding: 15px 18px;
       background: rgba(20, 20, 20, 0.9) !important;
       border: 1px solid rgba(255, 255, 255, 0.25);
@@ -208,30 +235,76 @@
       text-decoration: underline;
     }
 
-    /* Hilfe-Button */
-    .help-btn {
-      width: 28px;
-      height: 28px;
-      background: rgba(184, 115, 51, 0.2);
-      border: 1px solid rgba(184, 115, 51, 0.4);
-      border-radius: 50%;
-      color: #b87333;
-      font-size: 16px;
-      font-weight: bold;
+    /* Hilfe-Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: rgba(30, 30, 30, 0.95);
+      backdrop-filter: blur(12px);
+      padding: 28px;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #ccc;
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      border-radius: 50%;
       transition: all 0.3s ease;
-      position: absolute;
-      right: 32px;
-      top: 50%;
-      transform: translateY(-50%);
     }
 
-    .help-btn:hover {
-      background: rgba(184, 115, 51, 0.3);
-      transform: scale(1.1);
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .link-list {
+      color: #ddd;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .link-list code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: monospace;
+      color: #b87333;
     }
 
     @media (max-width: 600px) {
@@ -263,9 +336,11 @@
     </div>
 
     <div class="form-group">
-      <label for="taobaoLink">RAW LINK</label>
+      <div class="label-row">
+        <label for="taobaoLink">RAW LINK</label>
+        <div class="help-btn" onclick="openModal()">?</div>
+      </div>
       <input type="text" id="taobaoLink" placeholder="Paste any Taobao, Tmall, 1688, Weidian link..." />
-      <div class="help-btn" onclick="openModal()">?</div>
     </div>
 
     <button onclick="convertLink()" class="btn-convert">Convert</button>
@@ -273,6 +348,145 @@
     <div id="result"></div>
   </div>
 
-  <!-- Rest of the code remains the same -->
+  <!-- Hilfe-Modal -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">✅ Kompatible RAW Links</div>
+        <button class="close-btn" onclick="closeModal()">×</button>
+      </div>
+      <div class="link-list">
+        <strong> Unterstützte Plattformen:</strong><br><br>
+        • <code>https://detail.tmall.com/item.htm?id=123456789</code><br>
+        • <code>https://item.taobao.com/item.htm?id=123456789</code><br>
+        • <code>https://detail.1688.com/offer/123456789.html</code><br>
+        • <code>https://shop123.weidian.com/product/123456789.html</code><br>
+        • <code>https://m.weidian.com/item.html?itemID=123456789</code>
+        <br><br>
+        <em>💡 Tipp: Kopiere einfach den Link direkt aus dem Browser.</em>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentLink = null;
+
+    // Modal-Funktionen
+    const modal = document.getElementById("helpModal");
+
+    function openModal() {
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    // Schließen mit ESC
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
+    // Schließen beim Klicken außerhalb
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Link-Konvertierung
+    function convertLink() {
+      const input = document.getElementById("taobaoLink").value.trim();
+      const shop = document.getElementById("shopSelect").value;
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "none";
+      currentLink = null;
+
+      if (!input) {
+        alert("⚠️ Please enter a link.");
+        return;
+      }
+
+      const cleanLink = input.split("#")[0];
+
+      // Extrahiere ID aus verschiedenen Plattformen
+      let productId = null;
+
+      // Taobao/Tmall: id=123456789
+      const idMatch = cleanLink.match(/[?&]id=(\d+)/);
+      if (idMatch) productId = idMatch[1];
+
+      // 1688: /offer/123456789.html
+      if (!productId) {
+        const offerMatch = cleanLink.match(/\/offer\/(\d+)\.html/);
+        if (offerMatch) productId = offerMatch[1];
+      }
+
+      // Weidian: /product/123456789.html oder itemID=123456789
+      if (!productId) {
+        const productMatch = cleanLink.match(/\/product\/(\d+)\.html/);
+        if (productMatch) productId = productMatch[1];
+      }
+      if (!productId) {
+        const itemMatch = cleanLink.match(/[?&]itemID=(\d+)/);
+        if (itemMatch) productId = itemMatch[1];
+      }
+
+      if (!productId) {
+        alert("❌ No valid product ID found. Supported: Taobao, Tmall, 1688, Weidian.");
+        return;
+      }
+
+      let convertedLink = "";
+
+      if (shop === "oopbuy") {
+        convertedLink = `https://oopbuy.com/product/1/${productId}`;
+      } 
+      else if (shop === "kakobuy") {
+        const encodedUrl = encodeURIComponent(cleanLink);
+        convertedLink = `https://kakobuy.com/item/details?url=${encodedUrl}`;
+      }
+      else if (shop === "cnfans") {
+        let platform = "TAOBAO";
+        if (cleanLink.includes("1688.com")) platform = "1688";
+        if (cleanLink.includes("weidian.com")) platform = "WEIDIAN";
+        convertedLink = `https://cnfans.com/product?id=${productId}&platform=${platform}`;
+      }
+      else if (shop === "itaobuy") {
+        const encodedUrl = encodeURIComponent(cleanLink);
+        convertedLink = `https://www.itaobuy.com/product-detail?url=${encodedUrl}`;
+      }
+
+      currentLink = convertedLink;
+
+      resultDiv.innerHTML = `
+        <strong>➡️ ${{
+          oopbuy: "OopBuy",
+          kakobuy: "KakaoBuy",
+          cnfans: "CNFans",
+          itaobuy: "iTaoBuy"
+        }[shop]}:</strong><br>
+        <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
+        <div class="buttons">
+          <button onclick="copyLink()" class="btn-copy">📋 Copy</button>
+          <button onclick="openLink()" class="btn-open">🚀 Open</button>
+        </div>
+      `;
+      resultDiv.style.display = "block";
+    }
+
+    function copyLink() {
+      if (!currentLink) return;
+      navigator.clipboard.writeText(currentLink).then(() => {
+        alert("✅ Link copied!");
+      }).catch(err => {
+        console.error("Copy failed:", err);
+        prompt("📋 Copy manually (Ctrl+C):", currentLink);
+      });
+    }
+
+    function openLink() {
+      if (!currentLink) return;
+      window.open(currentLink, '_blank', 'noopener');
+    }
+  </script>
 </body>
 </html>
