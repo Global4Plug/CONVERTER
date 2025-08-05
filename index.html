@@ -11,11 +11,11 @@
     :root {
       --bg-color: #1e1e1e;
       --text-color: #ffffff;
-      --button-bg-light: #4285F4;
+      --button-bg-light: #4285F4; /* Chrome-Blau */
       --button-bg-dark: #4285F4;
       --input-bg-light: rgba(255, 255, 255, 0.1);
       --result-bg-light: rgba(255, 255, 255, 0.1);
-      --accent-color: #4285F4;
+      --accent-color: #4285F4; /* Chrome-Blau als Akzentfarbe */
     }
 
     body {
@@ -89,12 +89,28 @@
       -webkit-backdrop-filter: blur(4px);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
       transition: all 0.3s ease;
+      -webkit-appearance: none;
+      appearance: none;
+      position: relative;
+    }
+
+    /* Benutzerdefinierter Pfeil für das Dropdown-Menü */
+    select::after {
+      content: "▾";
+      font-size: 18px;
+      color: #aaa;
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
     }
 
     input:focus, select:focus {
       outline: none;
       border-color: var(--button-bg-light);
       box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+      background: white;
     }
 
     button {
