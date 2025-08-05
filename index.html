@@ -11,11 +11,11 @@
     :root {
       --bg-color: #1e1e1e;
       --text-color: #ffffff;
-      --button-bg-light: #4285F4; /* Chrome-Blau */
-      --button-bg-dark: #4285F4;
+      --button-bg-light: #b87333; /* Bronze */
+      --button-bg-dark: #b87333;
       --input-bg-light: rgba(255, 255, 255, 0.1);
       --result-bg-light: rgba(255, 255, 255, 0.1);
-      --accent-color: #4285F4; /* Chrome-Blau als Akzentfarbe */
+      --accent-color: #b87333; /* Bronze als Akzentfarbe */
     }
 
     body {
@@ -109,7 +109,7 @@
     input:focus, select:focus {
       outline: none;
       border-color: var(--button-bg-light);
-      box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+      box-shadow: 0 0 0 2px rgba(184, 115, 51, 0.2);
       background: white;
     }
 
@@ -182,175 +182,4 @@
       display: inline-block;
       width: 40px;
       height: 20px;
-      background: linear-gradient(to right, #ccc, #aaa);
-      border-radius: 20px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .theme-switch::before {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 16px;
-      height: 16px;
-      background: white;
-      border-radius: 50%;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-    }
-
-    .theme-switch:checked + .theme-switch::before {
-      transform: translateX(20px);
-    }
-
-    .theme-switch:checked + .theme-switch {
-      background: linear-gradient(to right, #aaa, #ccc);
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .container {
-        padding: 24px;
-        border-radius: 16px;
-      }
-      h2 { font-size: 22px; }
-    }
-
-    /* Logo */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .logo {
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 10px var(--accent-color));
-      animation: metalGlow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes metalGlow {
-      0% { filter: drop-shadow(0 0 10px var(--accent-color)); }
-      100% { filter: drop-shadow(0 0 20px var(--accent-color)); }
-    }
-  </style>
-</head>
-<body class="dark-mode">
-  <div class="container">
-    <!-- Header mit Logo und Titel -->
-    <div class="header">
-      <img src="https://i.postimg.cc/pLNp2Kv3/IMG-1457.png" alt="Global Plug Logo" class="logo">
-      <h2>Taobao Link Converter</h2>
-    </div>
-
-    <div class="form-group">
-      <label for="shopSelect">➡️ Wähle den Shop:</label>
-      <select id="shopSelect">
-        <option value="oopbuy">OopBuy</option>
-        <option value="kakobuy">KakaoBuy</option>
-        <option value="cnfans">CNFans</option>
-        <option value="itaobuy">iTaoBuy</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="taobaoLink">🔗 Taobao/Tmall-Link einfügen:</label>
-      <input type="text" id="taobaoLink" placeholder="https://detail.tmall.com/item.htm?id=..." />
-    </div>
-
-    <button onclick="convertLink()" class="btn-convert">Umwandeln</button>
-
-    <div id="result"></div>
-  </div>
-
-  <script>
-    let currentLink = null;
-
-    // Dark/Light Modus schalten
-    const darkModeSwitch = document.getElementById('darkModeSwitch');
-    const body = document.body;
-
-    if (darkModeSwitch) {
-      darkModeSwitch.addEventListener('change', () => {
-        body.classList.toggle('dark-mode');
-      });
-    }
-
-    function convertLink() {
-      const input = document.getElementById("taobaoLink").value.trim();
-      const shop = document.getElementById("shopSelect").value;
-      const resultDiv = document.getElementById("result");
-      resultDiv.style.display = "none";
-      currentLink = null;
-
-      if (!input) {
-        alert("Bitte einen Taobao- oder Tmall-Link eingeben!");
-        return;
-      }
-
-      const cleanLink = input.split("#")[0];
-
-      const idMatch = cleanLink.match(/[?&]id=(\d+)/);
-      if (!idMatch) {
-        alert("❌ Keine gültige Produkt-ID im Link gefunden. Stelle sicher, dass 'id=...' enthalten ist.");
-        return;
-      }
-
-      const productId = idMatch[1];
-      let convertedLink = "";
-
-      if (shop === "oopbuy") {
-        convertedLink = `https://oopbuy.com/product/1/${productId}`;
-      } 
-      else if (shop === "kakobuy") {
-        const encodedUrl = encodeURIComponent(cleanLink);
-        convertedLink = `https://kakobuy.com/item/details?url=${encodedUrl}`;
-      }
-      else if (shop === "cnfans") {
-        convertedLink = `https://cnfans.com/product?id=${productId}&platform=TAOBAO`;
-      }
-      else if (shop === "itaobuy") {
-        const encodedUrl = encodeURIComponent(cleanLink);
-        convertedLink = `https://www.itaobuy.com/product-detail?url=${encodedUrl}`;
-      }
-
-      currentLink = convertedLink;
-
-      resultDiv.innerHTML = `
-        <strong>➡️ ${{
-          oopbuy: "OopBuy",
-          kakobuy: "KakaoBuy",
-          cnfans: "CNFans",
-          itaobuy: "iTaoBuy"
-        }[shop]}-Link:</strong><br>
-        <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
-        <div class="buttons">
-          <button onclick="copyLink()" class="btn-copy">📋 Kopieren</button>
-          <button onclick="openLink()" class="btn-open">🚀 Öffnen</button>
-        </div>
-      `;
-      resultDiv.style.display = "block";
-    }
-
-    function copyLink() {
-      if (!currentLink) return;
-      navigator.clipboard.writeText(currentLink).then(() => {
-        alert("✅ Link kopiert!");
-      }).catch(() => {
-        prompt("📋 Kopiere manuell (Strg+C):", currentLink);
-      });
-    }
-
-    function openLink() {
-      if (!currentLink) return;
-      window.open(currentLink, '_blank', 'noopener');
-    }
-  </script>
-</body>
-</html>
+      background: linear-gradient(to
