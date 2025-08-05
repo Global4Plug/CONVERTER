@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Global Plug Taobao Link Converter</title>
+  <title>Global Plug Taobao, 1688 & Weidian Link Converter</title>
   <style>
     /* Modernes Design mit Bronze-Akzenten */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
@@ -11,7 +11,7 @@
     :root {
       --bg-color: #1e1e1e;
       --text-color: #ffffff;
-      --button-bg: #b87333; /* Bronze */
+      --button-bg: #b87333;
       --input-bg: rgba(30, 30, 30, 0.8);
       --result-bg: rgba(255, 255, 255, 0.08);
       --accent-color: #b87333;
@@ -42,8 +42,8 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      filter: blur(5px); /* Blur-Effekt für den Hintergrund */
-      z-index: -1; /* Sicherstellen, dass der Hintergrund hinter allen anderen Elementen liegt */
+      filter: blur(5px);
+      z-index: -1;
     }
 
     .container {
@@ -58,7 +58,7 @@
       overflow: hidden;
       padding: 32px;
       position: relative;
-      z-index: 1; /* Sicherstellen, dass der Container vorne steht */
+      z-index: 1;
     }
 
     h2 {
@@ -202,14 +202,12 @@
   </style>
 </head>
 <body>
-  <!-- Hintergrund mit Blur-Effekt -->
   <div class="background-blur"></div>
 
   <div class="container">
-    <!-- Header mit Logo und Titel -->
     <div class="header">
       <img src="https://i.postimg.cc/pLNp2Kv3/IMG-1457.png" alt="Global Plug Logo" class="logo">
-      <h2>Taobao Link Converter</h2>
+      <h2>Taobao, 1688 & Weidian Link Converter</h2>
     </div>
 
     <div class="form-group">
@@ -223,7 +221,7 @@
     </div>
 
     <div class="form-group">
-      <label for="taobaoLink">🔗 Taobao/Tmall-Link einfügen:</label>
+      <label for="taobaoLink">🔗 Taobao/Tmall/1688/Weidian-Link einfügen:</label>
       <input type="text" id="taobaoLink" placeholder="https://detail.tmall.com/item.htm?id=..." />
     </div>
 
@@ -243,19 +241,49 @@
       currentLink = null;
 
       if (!input) {
-        alert("Bitte einen Taobao- oder Tmall-Link eingeben!");
+        alert("Bitte einen Taobao-, Tmall-, 1688- oder Weidian-Link eingeben!");
         return;
       }
 
+      // Nur den Teil vor # nehmen
       const cleanLink = input.split("#")[0];
 
+      // Extrahiere die ID aus verschiedenen URL-Typen
+      let productId = null;
+
+      // 1. Taobao/Tmall: id=123456789
       const idMatch = cleanLink.match(/[?&]id=(\d+)/);
-      if (!idMatch) {
-        alert("❌ Keine gültige Produkt-ID im Link gefunden. Stelle sicher, dass 'id=...' enthalten ist.");
+      if (idMatch) {
+        productId = idMatch[1];
+      }
+
+      // 2. 1688: /offer/123456789.html
+      if (!productId) {
+        const offerMatch = cleanLink.match(/\/offer\/(\d+)\.html/);
+        if (offerMatch) {
+          productId = offerMatch[1];
+        }
+      }
+
+      // 3. Weidian: /product/123456789.html oder itemID=123456789
+      if (!productId) {
+        const weidianProductMatch = cleanLink.match(/\/product\/(\d+)\.html/);
+        if (weidianProductMatch) {
+          productId = weidianProductMatch[1];
+        }
+      }
+      if (!productId) {
+        const weidianItemMatch = cleanLink.match(/[?&]itemID=(\d+)/);
+        if (weidianItemMatch) {
+          productId = weidianItemMatch[1];
+        }
+      }
+
+      if (!productId) {
+        alert("❌ Keine gültige Produkt-ID im Link gefunden. Unterstützt: Taobao, Tmall, 1688, Weidian.");
         return;
       }
 
-      const productId = idMatch[1];
       let convertedLink = "";
 
       if (shop === "oopbuy") {
@@ -266,7 +294,10 @@
         convertedLink = `https://kakobuy.com/item/details?url=${encodedUrl}`;
       }
       else if (shop === "cnfans") {
-        convertedLink = `https://cnfans.com/product?id=${productId}&platform=TAOBAO`;
+        let platform = "TAOBAO";
+        if (cleanLink.includes("1688.com")) platform = "1688";
+        if (cleanLink.includes("weidian.com")) platform = "WEIDIAN";
+        convertedLink = `https://cnfans.com/product?id=${productId}&platform=${platform}`;
       }
       else if (shop === "itaobuy") {
         const encodedUrl = encodeURIComponent(cleanLink);
