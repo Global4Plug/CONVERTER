@@ -65,7 +65,8 @@
 
     input, select {
       width: 100%;
-      padding: 15px 18px;
+      height: 52px; /* Einheitliche Höhe */
+      padding: 0 18px; /* gleichmäßiges Padding */
       background: rgba(20, 20, 20, 0.9);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 14px;
@@ -73,6 +74,9 @@
       color: #fff;
       margin-bottom: 20px;
       outline: none;
+      box-sizing: border-box; /* exakte Breite/Höhe */
+      display: flex;
+      align-items: center; /* Text mittig */
     }
 
     button {
@@ -109,6 +113,8 @@
       background: rgba(255, 255, 255, 0.1);
       color: white;
       font-size: 15px;
+      height: 40px;
+      padding: 0 16px;
     }
 
     #result {
