@@ -175,117 +175,126 @@
 
   <div id="toast">✅ Link kopiert!</div>
 
-  <script>
-    let currentLink = null;
+<script>
+  let currentLink = null;
 
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      toast.textContent = msg;
-      toast.style.display = "block";
-      setTimeout(() => toast.style.display = "none", 2000);
+  function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.style.display = "block";
+    setTimeout(() => toast.style.display = "none", 2000);
+  }
+
+  function showError(msg) {
+    const resultDiv = document.getElementById("result");
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = `<span style="color:#ff6b6b;font-weight:600">${msg}</span>`;
+  }
+
+  function convertLink() {
+    const input = document.getElementById("taobaoLink").value.trim();
+    const shop = document.getElementById("shopSelect").value;
+    const resultDiv = document.getElementById("result");
+    resultDiv.style.display = "none";
+    currentLink = null;
+
+    if (!input) {
+      showError("⚠️ Bitte einen Link eingeben.");
+      return;
     }
 
-    function showError(msg) {
-      const resultDiv = document.getElementById("result");
-      resultDiv.style.display = "block";
-      resultDiv.innerHTML = `<span style="color:#ff6b6b;font-weight:600">${msg}</span>`;
+    const cleanLink = input.split("#")[0];
+    let productId = null;
+    let platform = "TAOBAO";
+
+    // Taobao / Tmall
+    const idMatch = cleanLink.match(/[?&]id=(\d+)/);
+    if (idMatch) productId = idMatch[1];
+
+    // 1688
+    const offerMatch = cleanLink.match(/\/offer\/(\d+)\.html/);
+    if (!productId && offerMatch) {
+      productId = offerMatch[1];
+      platform = "1688";
     }
 
-    function convertLink() {
-      const input = document.getElementById("taobaoLink").value.trim();
-      const shop = document.getElementById("shopSelect").value;
-      const resultDiv = document.getElementById("result");
-      resultDiv.style.display = "none";
-      currentLink = null;
-
-      if (!input) {
-        showError("⚠️ Bitte einen Link eingeben.");
-        return;
-      }
-
-      const cleanLink = input.split("#")[0];
-      let productId = null;
-      let platform = "TAOBAO";
-
-      // Taobao / Tmall
-      const idMatch = cleanLink.match(/[?&]id=(\d+)/);
-      if (idMatch) productId = idMatch[1];
-
-      // 1688
-      const offerMatch = cleanLink.match(/\/offer\/(\d+)\.html/);
-      if (!productId && offerMatch) {
-        productId = offerMatch[1];
-        platform = "1688";
-      }
-
-      // Weidian
-      const productMatch = cleanLink.match(/\/product\/(\d+)\.html/);
-      if (!productId && productMatch) {
-        productId = productMatch[1];
-        platform = "WEIDIAN";
-      }
-      const itemMatch = cleanLink.match(/[?&]itemID=(\d+)/);
-      if (!productId && itemMatch) {
-        productId = itemMatch[1];
-        platform = "WEIDIAN";
-      }
-
-      // Yupoo
-      const yupooMatch = cleanLink.match(/albums\/(\d+)/);
-      if (!productId && yupooMatch) {
-        productId = yupooMatch[1];
-        platform = "YUPOO";
-      }
-
-      if (!productId) {
-        showError("❌ Keine gültige Produkt- oder Album-ID gefunden.");
-        return;
-      }
-
-      // CNFans Plattform-Mapping
-      let cnfansPlatform = platform;
-      if (platform === "1688") cnfansPlatform = "ALI_1688";
-      if (platform === "TAOBAO") cnfansPlatform = "TAOBAO";
-      if (platform === "WEIDIAN") cnfansPlatform = "WEIDIAN";
-      if (platform === "YUPOO") cnfansPlatform = "YUPOO";
-
-      let convertedLink = "";
-      if (shop === "oopbuy") {
-        convertedLink = `https://oopbuy.com/product/1/${productId}`;
-      } else if (shop === "kakobuy") {
-        convertedLink = `https://kakobuy.com/item/details?url=${encodeURIComponent(cleanLink)}`;
-      } else if (shop === "cnfans") {
-        convertedLink = `https://cnfans.com/product?id=${productId}&platform=${cnfansPlatform}`;
-      } else if (shop === "itaobuy") {
-        convertedLink = `https://www.itaobuy.com/product-detail?url=${encodeURIComponent(cleanLink)}`;
-      }
-
-      currentLink = convertedLink;
-
-      resultDiv.innerHTML = `
-        <strong>➡️ ${shop.toUpperCase()}:</strong><br>
-        <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
-        <div class="buttons">
-          <button onclick="copyLink()" class="btn-copy">📋 Kopieren</button>
-          <button onclick="openLink()" class="btn-open">🚀 Öffnen</button>
-        </div>
-      `;
-      resultDiv.style.display = "block";
+    // Weidian
+    const productMatch = cleanLink.match(/\/product\/(\d+)\.html/);
+    if (!productId && productMatch) {
+      productId = productMatch[1];
+      platform = "WEIDIAN";
+    }
+    const itemMatch = cleanLink.match(/[?&]itemID=(\d+)/);
+    if (!productId && itemMatch) {
+      productId = itemMatch[1];
+      platform = "WEIDIAN";
     }
 
-    function copyLink() {
-      if (!currentLink) return;
-      navigator.clipboard.writeText(currentLink).then(() => {
-        showToast("✅ Link kopiert!");
-      }).catch(() => {
-        showError("❌ Konnte Link nicht kopieren.");
-      });
+    // Yupoo
+    const yupooMatch = cleanLink.match(/albums\/(\d+)/);
+    if (!productId && yupooMatch) {
+      productId = yupooMatch[1];
+      platform = "YUPOO";
     }
 
-    function openLink() {
-      if (!currentLink) return;
-      window.open(currentLink, '_blank', 'noopener');
+    if (!productId) {
+      showError("❌ Keine gültige Produkt- oder Album-ID gefunden.");
+      return;
     }
-  </script>
+
+    // CNFans Plattform-Mapping
+    let cnfansPlatform = platform;
+    if (platform === "1688") cnfansPlatform = "ALI_1688";
+    if (platform === "TAOBAO") cnfansPlatform = "TAOBAO";
+    if (platform === "WEIDIAN") cnfansPlatform = "WEIDIAN";
+    if (platform === "YUPOO") cnfansPlatform = "YUPOO";
+
+    // Referral Codes
+    const refCodes = {
+      cnfans: "&ref=15460620",
+      itaobuy: "https://itaobuy.allapp.link/d2saaes7937s3ori94v0", // Shortlink
+      kakobuy: "&affcode=GlobalPlug",
+      oopbuy: "?inviteCode=5D7DV5WTT"
+    };
+
+    let convertedLink = "";
+    if (shop === "oopbuy") {
+      convertedLink = `https://oopbuy.com/product/1/${productId}${refCodes.oopbuy}`;
+    } else if (shop === "kakobuy") {
+      convertedLink = `https://kakobuy.com/item/details?url=${encodeURIComponent(cleanLink)}${refCodes.kakobuy}`;
+    } else if (shop === "cnfans") {
+      convertedLink = `https://cnfans.com/product?id=${productId}&platform=${cnfansPlatform}${refCodes.cnfans}`;
+    } else if (shop === "itaobuy") {
+      // Bei iTaoBuy direkt dein Invite-Link verwenden
+      convertedLink = refCodes.itaobuy;
+    }
+
+    currentLink = convertedLink;
+
+    resultDiv.innerHTML = `
+      <strong>➡️ ${shop.toUpperCase()}:</strong><br>
+      <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
+      <div class="buttons">
+        <button onclick="copyLink()" class="btn-copy">📋 Kopieren</button>
+        <button onclick="openLink()" class="btn-open">🚀 Öffnen</button>
+      </div>
+    `;
+    resultDiv.style.display = "block";
+  }
+
+  function copyLink() {
+    if (!currentLink) return;
+    navigator.clipboard.writeText(currentLink).then(() => {
+      showToast("✅ Link kopiert!");
+    }).catch(() => {
+      showError("❌ Konnte Link nicht kopieren.");
+    });
+  }
+
+  function openLink() {
+    if (!currentLink) return;
+    window.open(currentLink, '_blank', 'noopener');
+  }
+</script>
 </body>
 </html>
