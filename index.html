@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Link Converter</title>
   <style>
-    /* Modernes Design mit geometrischer Präzision & Bronze-Harmonie */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
     :root {
@@ -20,7 +19,7 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--bg-color);
       margin: 0;
       padding: 20px;
@@ -34,60 +33,26 @@
 
     .background-blur {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0;left: 0;
+      width: 100%;height: 100%;
       background-image: url('https://i.postimg.cc/KYwXcq22/Neues-Projekt.png');
       background-size: cover;
       background-position: center;
-      background-repeat: no-repeat;
       filter: blur(6px);
       z-index: -1;
       opacity: 0.7;
     }
 
     .container {
-      width: 100%;
       max-width: 680px;
+      width: 100%;
       background: var(--input-bg);
       backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
       border-radius: 24px;
-      box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.4),
-        var(--accent-shadow);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), var(--accent-shadow);
       border: 1px solid var(--border-color);
-      overflow: hidden;
       padding: 36px;
-      position: relative;
       z-index: 1;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .logo {
-      width: 64px;
-      height: 64px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 12px rgba(184, 115, 51, 0.6));
-      animation: metalGlow 2.5s ease-in-out infinite alternate;
-      border-radius: 12px;
-    }
-
-    @keyframes metalGlow {
-      0% { filter: drop-shadow(0 0 10px rgba(184, 115, 51, 0.5)); }
-      100% { filter: drop-shadow(0 0 20px rgba(184, 115, 51, 0.8)); }
-    }
-
-    .form-group {
-      margin-bottom: 22px;
     }
 
     label {
@@ -96,74 +61,48 @@
       font-weight: 600;
       color: #e0e0e0;
       font-size: 15px;
-      letter-spacing: 0.5px;
       text-transform: uppercase;
-      opacity: 0.9;
     }
 
     input, select {
       width: 100%;
       padding: 15px 18px;
-      background: rgba(20, 20, 20, 0.9) !important;
+      background: rgba(20, 20, 20, 0.9);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 14px;
       font-size: 16px;
-      color: #ffffff !important;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      color: #fff;
+      margin-bottom: 20px;
       outline: none;
-    }
-
-    input:focus, select:focus {
-      border-color: var(--button-bg);
-      box-shadow: 0 0 0 3px var(--hover-glow);
-    }
-
-    select {
-      -webkit-appearance: none;
-      appearance: none;
-      position: relative;
-      padding-right: 40px !important;
-    }
-
-    select::after {
-      content: "▾";
-      font-size: 18px;
-      color: #aaa;
-      position: absolute;
-      right: 18px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      z-index: 2;
     }
 
     button {
       padding: 15px 22px;
-      margin: 6px 8px 6px 0;
       border: none;
       border-radius: 14px;
       cursor: pointer;
       font-size: 16px;
       font-weight: 600;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: 0.3s;
     }
 
     .btn-convert {
       background: var(--button-bg);
       color: white;
       width: 100%;
-      font-size: 17px;
-      letter-spacing: 0.8px;
       text-transform: uppercase;
-      box-shadow: 0 4px 15px rgba(184, 115, 51, 0.3);
     }
 
     .btn-convert:hover {
       transform: translateY(-2px);
       box-shadow: 0 7px 20px rgba(184, 115, 51, 0.4);
+    }
+
+    .buttons {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .btn-copy, .btn-open {
@@ -173,30 +112,15 @@
       font-size: 15px;
     }
 
-    .btn-copy:hover, .btn-open:hover {
-      background: rgba(255, 255, 255, 0.15);
-      transform: translateY(-1px);
-    }
-
-    .buttons {
-      margin-top: 18px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
     #result {
-      margin-top: 26px;
-      padding: 22px;
+      margin-top: 20px;
+      padding: 18px;
       background: var(--result-bg);
-      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 16px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      word-break: break-all;
+      border: 1px solid rgba(255, 255, 255, 0.15);
       display: none;
+      word-break: break-all;
       font-size: 15px;
-      line-height: 1.6;
     }
 
     #result a {
@@ -205,27 +129,18 @@
       text-decoration: none;
     }
 
-    #result a:hover {
-      text-decoration: underline;
-    }
-
-    .lang-selector {
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(30, 30, 30, 0.9);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 999;
       font-size: 14px;
-      padding: 8px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-      background: rgba(255, 255, 255, 0.1);
-      color: #ccc;
-      cursor: pointer;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 28px 24px;
-        border-radius: 20px;
-      }
-      .logo { width: 56px; height: 56px; }
-      .btn-convert { font-size: 16px; }
     }
   </style>
 </head>
@@ -233,26 +148,8 @@
   <div class="background-blur"></div>
 
   <div class="container">
-    <div class="header">
-      <img src="https://i.postimg.cc/pLNp2Kv3/IMG-1457.png" alt="Global Plug Logo" class="logo">
-      <select class="lang-selector" id="langSelect" onchange="changeLanguage()">
-        <option value="de">🇩🇪 DE</option>
-        <option value="en" selected>🇬🇧 EN</option>
-        <option value="es">🇪🇸 ES</option>
-        <option value="fr">🇫🇷 FR</option>
-        <option value="pt">🇵🇹 PT</option>
-        <option value="it">🇮🇹 IT</option>
-        <option value="ru">🇷🇺 RU</option>
-        <option value="tr">🇹🇷 TR</option>
-        <option value="pl">🇵🇱 PL</option>
-        <option value="ja">🇯🇵 JA</option>
-        <option value="zh">🇨🇳 ZH</option>
-        <option value="ar">🇦🇪 AR</option>
-      </select>
-    </div>
-
     <div class="form-group">
-      <label for="shopSelect" id="labelPlatform">Platform</label>
+      <label for="shopSelect">Plattform</label>
       <select id="shopSelect">
         <option value="oopbuy">OopBuy</option>
         <option value="kakobuy">KakaoBuy</option>
@@ -263,61 +160,32 @@
 
     <div class="form-group">
       <label for="taobaoLink">RAW LINK</label>
-      <input type="text" id="taobaoLink" placeholder="Paste any Taobao, Tmall, 1688, Weidian link..." />
+      <input type="text" id="taobaoLink" placeholder="Taobao, Tmall, 1688, Weidian link einfügen..." />
     </div>
 
-    <button onclick="convertLink()" class="btn-convert" id="btnConvert">Convert</button>
+    <button onclick="convertLink()" class="btn-convert">Umwandeln</button>
 
     <div id="result"></div>
   </div>
 
+  <div id="toast">✅ Link kopiert!</div>
+
   <script>
     let currentLink = null;
-    let currentLang = 'en';
 
-    // Sprachübersetzungen (ohne RAW LINK – bleibt immer englisch)
-    const translations = {
-      de: { platform: "Plattform", convert: "Umwandeln" },
-      en: { platform: "Platform", convert: "Convert" },
-      es: { platform: "Plataforma", convert: "Convertir" },
-      fr: { platform: "Plateforme", convert: "Convertir" },
-      pt: { platform: "Plataforma", convert: "Converter" },
-      it: { platform: "Piattaforma", convert: "Converti" },
-      ru: { platform: "Платформа", convert: "Конвертировать" },
-      tr: { platform: "Platform", convert: "Dönüştür" },
-      pl: { platform: "Platforma", convert: "Konwertuj" },
-      ja: { platform: "プラットフォーム", convert: "変換" },
-      zh: { platform: "平台", convert: "转换" },
-      ar: { platform: "المنصة", convert: "تحويل" }
-    };
-
-    // Automatische Spracherkennung
-    function detectLanguage() {
-      const userLang = navigator.language.split('-')[0];
-      return translations[userLang] ? userLang : 'en';
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.style.display = "block";
+      setTimeout(() => toast.style.display = "none", 2000);
     }
 
-    // Sprache setzen
-    function changeLanguage() {
-      currentLang = document.getElementById('langSelect').value;
-      updateLanguage();
+    function showError(msg) {
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML = `<span style="color:#ff6b6b;font-weight:600">${msg}</span>`;
     }
 
-    function updateLanguage() {
-      const t = translations[currentLang];
-      document.getElementById('labelPlatform').textContent = t.platform;
-      document.getElementById('btnConvert').textContent = t.convert;
-    }
-
-    // Init: Sprache beim Laden setzen
-    window.onload = () => {
-      const detectedLang = detectLanguage();
-      document.getElementById('langSelect').value = detectedLang;
-      currentLang = detectedLang;
-      updateLanguage();
-    };
-
-    // Link-Konvertierung
     function convertLink() {
       const input = document.getElementById("taobaoLink").value.trim();
       const shop = document.getElementById("shopSelect").value;
@@ -326,75 +194,50 @@
       currentLink = null;
 
       if (!input) {
-        alert("⚠️ Please enter a link.");
+        showError("⚠️ Bitte einen Link eingeben.");
         return;
       }
 
       const cleanLink = input.split("#")[0];
-
-      // Extrahiere ID aus verschiedenen Plattformen
       let productId = null;
 
-      // Taobao/Tmall: id=123456789
+      // ID suchen
       const idMatch = cleanLink.match(/[?&]id=(\d+)/);
       if (idMatch) productId = idMatch[1];
-
-      // 1688: /offer/123456789.html
-      if (!productId) {
-        const offerMatch = cleanLink.match(/\/offer\/(\d+)\.html/);
-        if (offerMatch) productId = offerMatch[1];
-      }
-
-      // Weidian: /product/123456789.html oder itemID=123456789
-      if (!productId) {
-        const productMatch = cleanLink.match(/\/product\/(\d+)\.html/);
-        if (productMatch) productId = productMatch[1];
-      }
-      if (!productId) {
-        const itemMatch = cleanLink.match(/[?&]itemID=(\d+)/);
-        if (itemMatch) productId = itemMatch[1];
-      }
+      const offerMatch = cleanLink.match(/\/offer\/(\d+)\.html/);
+      if (!productId && offerMatch) productId = offerMatch[1];
+      const productMatch = cleanLink.match(/\/product\/(\d+)\.html/);
+      if (!productId && productMatch) productId = productMatch[1];
+      const itemMatch = cleanLink.match(/[?&]itemID=(\d+)/);
+      if (!productId && itemMatch) productId = itemMatch[1];
 
       if (!productId) {
-        alert("❌ No valid product ID found. Supported: Taobao, Tmall, 1688, Weidian.");
+        showError("❌ Keine gültige Produkt-ID gefunden.");
         return;
       }
 
       let convertedLink = "";
-
       if (shop === "oopbuy") {
         convertedLink = `https://oopbuy.com/product/1/${productId}`;
-      } 
-      else if (shop === "kakobuy") {
-        const encodedUrl = encodeURIComponent(cleanLink);
-        convertedLink = `https://kakobuy.com/item/details?url=${encodedUrl}`;
-      }
-      else if (shop === "cnfans") {
+      } else if (shop === "kakobuy") {
+        convertedLink = `https://kakobuy.com/item/details?url=${encodeURIComponent(cleanLink)}`;
+      } else if (shop === "cnfans") {
         let platform = "TAOBAO";
         if (cleanLink.includes("1688.com")) platform = "1688";
         if (cleanLink.includes("weidian.com")) platform = "WEIDIAN";
         convertedLink = `https://cnfans.com/product?id=${productId}&platform=${platform}`;
-      }
-      else if (shop === "itaobuy") {
-        const encodedUrl = encodeURIComponent(cleanLink);
-        convertedLink = `https://www.itaobuy.com/product-detail?url=${encodedUrl}`;
+      } else if (shop === "itaobuy") {
+        convertedLink = `https://www.itaobuy.com/product-detail?url=${encodeURIComponent(cleanLink)}`;
       }
 
       currentLink = convertedLink;
 
-      const shopNames = {
-        oopbuy: "OopBuy",
-        kakobuy: "KakaoBuy",
-        cnfans: "CNFans",
-        itaobuy: "iTaoBuy"
-      };
-
       resultDiv.innerHTML = `
-        <strong>➡️ ${shopNames[shop]}:</strong><br>
+        <strong>➡️ ${shop}:</strong><br>
         <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
         <div class="buttons">
-          <button onclick="copyLink()" class="btn-copy">📋 Copy</button>
-          <button onclick="openLink()" class="btn-open">🚀 Open</button>
+          <button onclick="copyLink()" class="btn-copy">📋 Kopieren</button>
+          <button onclick="openLink()" class="btn-open">🚀 Öffnen</button>
         </div>
       `;
       resultDiv.style.display = "block";
@@ -403,9 +246,9 @@
     function copyLink() {
       if (!currentLink) return;
       navigator.clipboard.writeText(currentLink).then(() => {
-        alert("✅ Link copied!");
+        showToast("✅ Link kopiert!");
       }).catch(() => {
-        prompt("📋 Copy manually (Ctrl+C):", currentLink);
+        showError("❌ Konnte Link nicht kopieren.");
       });
     }
 
