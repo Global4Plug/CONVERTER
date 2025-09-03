@@ -66,7 +66,7 @@
     input, select {
       width: 100%;
       height: 52px; /* Einheitliche Höhe */
-      padding: 0 18px; /* gleichmäßiges Padding */
+      padding: 0 18px;
       background: rgba(20, 20, 20, 0.9);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 14px;
@@ -74,9 +74,9 @@
       color: #fff;
       margin-bottom: 20px;
       outline: none;
-      box-sizing: border-box; /* exakte Breite/Höhe */
+      box-sizing: border-box;
       display: flex;
-      align-items: center; /* Text mittig */
+      align-items: center;
     }
 
     button {
@@ -230,7 +230,7 @@
         platform = "WEIDIAN";
       }
 
-      // Yupoo (Album ID)
+      // Yupoo
       const yupooMatch = cleanLink.match(/albums\/(\d+)/);
       if (!productId && yupooMatch) {
         productId = yupooMatch[1];
@@ -242,13 +242,20 @@
         return;
       }
 
+      // CNFans Plattform-Mapping
+      let cnfansPlatform = platform;
+      if (platform === "1688") cnfansPlatform = "ALI_1688";
+      if (platform === "TAOBAO") cnfansPlatform = "TAOBAO";
+      if (platform === "WEIDIAN") cnfansPlatform = "WEIDIAN";
+      if (platform === "YUPOO") cnfansPlatform = "YUPOO";
+
       let convertedLink = "";
       if (shop === "oopbuy") {
         convertedLink = `https://oopbuy.com/product/1/${productId}`;
       } else if (shop === "kakobuy") {
         convertedLink = `https://kakobuy.com/item/details?url=${encodeURIComponent(cleanLink)}`;
       } else if (shop === "cnfans") {
-        convertedLink = `https://cnfans.com/product?id=${productId}&platform=${platform}`;
+        convertedLink = `https://cnfans.com/product?id=${productId}&platform=${cnfansPlatform}`;
       } else if (shop === "itaobuy") {
         convertedLink = `https://www.itaobuy.com/product-detail?url=${encodeURIComponent(cleanLink)}`;
       }
