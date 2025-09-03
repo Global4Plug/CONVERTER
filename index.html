@@ -14,7 +14,6 @@
       --input-bg: rgba(30, 30, 30, 0.85);
       --result-bg: rgba(255, 255, 255, 0.08);
       --border-color: rgba(255, 255, 255, 0.2);
-      --hover-glow: rgba(184, 115, 51, 0.2);
       --accent-shadow: 0 0 15px rgba(184, 115, 51, 0.3);
     }
 
@@ -160,7 +159,7 @@
 
     <div class="form-group">
       <label for="taobaoLink">RAW LINK</label>
-      <input type="text" id="taobaoLink" placeholder="Taobao, Tmall, 1688, Weidian link einfügen..." />
+      <input type="text" id="taobaoLink" placeholder="Taobao, Tmall, 1688, Weidian, Yupoo Link einfügen..." />
     </div>
 
     <button onclick="convertLink()" class="btn-convert">Umwandeln</button>
@@ -200,19 +199,40 @@
 
       const cleanLink = input.split("#")[0];
       let productId = null;
+      let platform = "TAOBAO";
 
-      // ID suchen
+      // Taobao / Tmall
       const idMatch = cleanLink.match(/[?&]id=(\d+)/);
       if (idMatch) productId = idMatch[1];
+
+      // 1688
       const offerMatch = cleanLink.match(/\/offer\/(\d+)\.html/);
-      if (!productId && offerMatch) productId = offerMatch[1];
+      if (!productId && offerMatch) {
+        productId = offerMatch[1];
+        platform = "1688";
+      }
+
+      // Weidian
       const productMatch = cleanLink.match(/\/product\/(\d+)\.html/);
-      if (!productId && productMatch) productId = productMatch[1];
+      if (!productId && productMatch) {
+        productId = productMatch[1];
+        platform = "WEIDIAN";
+      }
       const itemMatch = cleanLink.match(/[?&]itemID=(\d+)/);
-      if (!productId && itemMatch) productId = itemMatch[1];
+      if (!productId && itemMatch) {
+        productId = itemMatch[1];
+        platform = "WEIDIAN";
+      }
+
+      // Yupoo (Album ID)
+      const yupooMatch = cleanLink.match(/albums\/(\d+)/);
+      if (!productId && yupooMatch) {
+        productId = yupooMatch[1];
+        platform = "YUPOO";
+      }
 
       if (!productId) {
-        showError("❌ Keine gültige Produkt-ID gefunden.");
+        showError("❌ Keine gültige Produkt- oder Album-ID gefunden.");
         return;
       }
 
@@ -222,9 +242,6 @@
       } else if (shop === "kakobuy") {
         convertedLink = `https://kakobuy.com/item/details?url=${encodeURIComponent(cleanLink)}`;
       } else if (shop === "cnfans") {
-        let platform = "TAOBAO";
-        if (cleanLink.includes("1688.com")) platform = "1688";
-        if (cleanLink.includes("weidian.com")) platform = "WEIDIAN";
         convertedLink = `https://cnfans.com/product?id=${productId}&platform=${platform}`;
       } else if (shop === "itaobuy") {
         convertedLink = `https://www.itaobuy.com/product-detail?url=${encodeURIComponent(cleanLink)}`;
@@ -233,7 +250,7 @@
       currentLink = convertedLink;
 
       resultDiv.innerHTML = `
-        <strong>➡️ ${shop}:</strong><br>
+        <strong>➡️ ${shop.toUpperCase()}:</strong><br>
         <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
         <div class="buttons">
           <button onclick="copyLink()" class="btn-copy">📋 Kopieren</button>
