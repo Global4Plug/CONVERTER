@@ -259,14 +259,13 @@
 
     let convertedLink = "";
     if (shop === "oopbuy") {
-      convertedLink = `https://oopbuy.com/product/1/${productId}${refCodes.oopbuy}`;
+    convertedLink = `https://oopbuy.com/product/1/${productId}${refCodes.oopbuy}`;
     } else if (shop === "kakobuy") {
-      convertedLink = `https://kakobuy.com/item/details?url=${encodeURIComponent(cleanLink)}${refCodes.kakobuy}`;
+    convertedLink = `https://kakobuy.com/item/details?url=${encodeURIComponent(cleanLink)}${refCodes.kakobuy}`;
     } else if (shop === "cnfans") {
-      convertedLink = `https://cnfans.com/product?id=${productId}&platform=${cnfansPlatform}${refCodes.cnfans}`;
+    convertedLink = `https://cnfans.com/product?id=${productId}&platform=${cnfansPlatform}${refCodes.cnfans}`;
     } else if (shop === "itaobuy") {
-      // Bei iTaoBuy direkt dein Invite-Link verwenden
-      convertedLink = refCodes.itaobuy;
+    convertedLink = `https://www.itaobuy.com/product-detail?url=${encodeURIComponent(cleanLink)}${refCodes.itaobuy}`;
     }
 
     currentLink = convertedLink;
