@@ -65,7 +65,7 @@
 
     input, select {
       width: 100%;
-      height: 52px; /* Einheitliche Höhe */
+      height: 52px;
       padding: 0 18px;
       background: rgba(20, 20, 20, 0.9);
       border: 1px solid rgba(255, 255, 255, 0.25);
@@ -164,8 +164,8 @@
     </div>
 
     <div class="form-group">
-      <label for="taobaoLink">RAW LINK</label>
-      <input type="text" id="taobaoLink" placeholder="Taobao, Tmall, 1688, Weidian, Yupoo Link einfügen..." />
+      <label for="taobaoLink">RAW oder Agent Link</label>
+      <input type="text" id="taobaoLink" placeholder="Taobao, 1688, Weidian, Yupoo oder Agent Link einfügen..." />
     </div>
 
     <button onclick="convertLink()" class="btn-convert">Umwandeln</button>
@@ -207,18 +207,49 @@
     let productId = null;
     let platform = "TAOBAO";
 
-    // Taobao / Tmall
+    // 🔹 Agent-Link Erkennung
+    if (cleanLink.includes("cnfans.com")) {
+      const idMatch = cleanLink.match(/[?&]id=(\d+)/);
+      const platformMatch = cleanLink.match(/[?&]platform=([^&]+)/);
+      if (idMatch) productId = idMatch[1];
+      if (platformMatch) platform = platformMatch[1];
+    } else if (cleanLink.includes("oopbuy.com")) {
+      const idMatch = cleanLink.match(/product\/1\/(\d+)/);
+      if (idMatch) productId = idMatch[1];
+    } else if (cleanLink.includes("kakobuy.com")) {
+      const urlMatch = cleanLink.match(/[?&]url=([^&]+)/);
+      if (urlMatch) {
+        const decoded = decodeURIComponent(urlMatch[1]);
+        return convertRaw(decoded, shop);
+      }
+    } else if (cleanLink.includes("itaobuy.com")) {
+      const urlMatch = cleanLink.match(/[?&]url=([^&]+)/);
+      if (urlMatch) {
+        const decoded = decodeURIComponent(urlMatch[1]);
+        return convertRaw(decoded, shop);
+      }
+    }
+
+    // Wenn noch kein Produkt extrahiert wurde → RAW prüfen
+    if (!productId) return convertRaw(cleanLink, shop);
+
+    return convertLinkFromData(productId, platform, cleanLink, shop);
+  }
+
+  // 🔹 RAW Links (Taobao, 1688, Yupoo, Weidian)
+  function convertRaw(cleanLink, shop) {
+    let productId = null;
+    let platform = "TAOBAO";
+
     const idMatch = cleanLink.match(/[?&]id=(\d+)/);
     if (idMatch) productId = idMatch[1];
 
-    // 1688
     const offerMatch = cleanLink.match(/\/offer\/(\d+)\.html/);
     if (!productId && offerMatch) {
       productId = offerMatch[1];
       platform = "1688";
     }
 
-    // Weidian
     const productMatch = cleanLink.match(/\/product\/(\d+)\.html/);
     if (!productId && productMatch) {
       productId = productMatch[1];
@@ -230,7 +261,6 @@
       platform = "WEIDIAN";
     }
 
-    // Yupoo
     const yupooMatch = cleanLink.match(/albums\/(\d+)/);
     if (!productId && yupooMatch) {
       productId = yupooMatch[1];
@@ -242,34 +272,37 @@
       return;
     }
 
-    // CNFans Plattform-Mapping
+    return convertLinkFromData(productId, platform, cleanLink, shop);
+  }
+
+  // 🔹 Link generieren
+  function convertLinkFromData(productId, platform, cleanLink, shop) {
+    const refCodes = {
+      cnfans: "&ref=15460620",
+      itaobuy: "&inviteCode=NAB294F3",
+      kakobuy: "&affcode=GlobalPlug",
+      oopbuy: "?inviteCode=5D7DV5WTT"
+    };
+
     let cnfansPlatform = platform;
     if (platform === "1688") cnfansPlatform = "ALI_1688";
     if (platform === "TAOBAO") cnfansPlatform = "TAOBAO";
     if (platform === "WEIDIAN") cnfansPlatform = "WEIDIAN";
     if (platform === "YUPOO") cnfansPlatform = "YUPOO";
 
-    // Referral Codes
-    const refCodes = {
-  cnfans: "&ref=15460620",
-  itaobuy: "&inviteCode=NAB294F3", // ← Nur der Invite-Code als Parameter!
-  kakobuy: "&affcode=GlobalPlug",
-  oopbuy: "?inviteCode=5D7DV5WTT"
-};
-
     let convertedLink = "";
     if (shop === "oopbuy") {
-    convertedLink = `https://oopbuy.com/product/1/${productId}${refCodes.oopbuy}`;
+      convertedLink = `https://oopbuy.com/product/1/${productId}${refCodes.oopbuy}`;
     } else if (shop === "kakobuy") {
-    convertedLink = `https://kakobuy.com/item/details?url=${encodeURIComponent(cleanLink)}${refCodes.kakobuy}`;
+      convertedLink = `https://kakobuy.com/item/details?url=${encodeURIComponent(cleanLink)}${refCodes.kakobuy}`;
     } else if (shop === "cnfans") {
-    convertedLink = `https://cnfans.com/product?id=${productId}&platform=${cnfansPlatform}${refCodes.cnfans}`;
+      convertedLink = `https://cnfans.com/product?id=${productId}&platform=${cnfansPlatform}${refCodes.cnfans}`;
     } else if (shop === "itaobuy") {
-    convertedLink = `https://www.itaobuy.com/product-detail?url=${encodeURIComponent(cleanLink)}${refCodes.itaobuy}`;
+      convertedLink = `https://www.itaobuy.com/product-detail?url=${encodeURIComponent(cleanLink)}${refCodes.itaobuy}`;
     }
 
     currentLink = convertedLink;
-
+    const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = `
       <strong>➡️ ${shop.toUpperCase()}:</strong><br>
       <a href="${convertedLink}" target="_blank" rel="noopener">${convertedLink}</a>
